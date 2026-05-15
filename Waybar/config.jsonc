@@ -16,18 +16,17 @@
     "custom/notification-silencing-indicator"
   ],
   "modules-right": [
-    "custom/update",
-    "temperature",
-    "cpu",
-    "memory",
-    "battery",
+    "clock",
     "custom/audio",
-    "network",
     "bluetooth",
-    "group/tray-expander",
-    "clock"
+    "network",
+    "memory",
+    "cpu",
+    "temperature",
+    "battery",
+    "custom/update",
+    "group/tray-expander"
   ],
-  // Left
   "custom/omarchy": {
     "format": "<span font='omarchy'>\ue900</span>",
     "on-click": "omarchy-menu",
@@ -61,7 +60,6 @@
       ]
     }
   },
-  // Center
   "hyprland/window": {
     "format": "{title}",
     "max-length": 50,
@@ -101,7 +99,6 @@
     "signal": 10,
     "return-type": "json"
   },
-  // Right
   "custom/update": {
     "format": "󰚰",
     "exec": "omarchy-update-available",
