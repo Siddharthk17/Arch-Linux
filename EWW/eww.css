@@ -1,0 +1,342 @@
+@define-color bg rgba(15, 15, 24, 0.90);
+@define-color surface rgba(26, 27, 46, 0.60);
+@define-color surface2 rgba(26, 27, 46, 0.80);
+@define-color border rgba(187, 154, 247, 0.12);
+@define-color border2 rgba(192, 202, 245, 0.06);
+
+@define-color fg #c0caf5;
+@define-color fg_dim rgba(192, 202, 245, 0.55);
+@define-color fg_muted rgba(192, 202, 245, 0.30);
+
+@define-color purple #bb9af7;
+@define-color blue #7aa2f7;
+@define-color cyan #7dcfff;
+@define-color green #9ece6a;
+@define-color yellow #e0af68;
+@define-color red #f7768e;
+
+* {
+  font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
+}
+
+window { background-color: transparent; }
+
+button {
+  background-image: none;
+  box-shadow: none;
+  border: none;
+  outline: none;
+}
+
+scale trough, scale highlight, scale slider {
+  background-image: none;
+  box-shadow: none;
+  border: none;
+}
+
+.dashboard {
+  background-color: @bg;
+  border-radius: 20px;
+  border: 1px solid @border;
+  padding: 24px 22px 20px;
+  min-width: 300px;
+}
+
+.sep {
+  background-color: @border2;
+  min-height: 1px;
+  margin: 0 -4px;
+}
+
+.profile-pic {
+  min-width: 90px;
+  min-height: 90px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid @border;
+  transition: border-color 0.2s ease;
+}
+
+.profile-pic:hover {
+  border-color: @purple;
+}
+
+.clock-wrap { padding-bottom: 2px; }
+.time-row { margin-bottom: 2px; }
+
+.greeting-text {
+  font-size: 12px;
+  color: @fg_muted;
+  font-weight: 600;
+}
+
+.username-text {
+  font-size: 18px;
+  color: @purple;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.time-text {
+  font-family: "Orbitron", "Oswald", "FiraCode Nerd Font", "JetBrainsMono Nerd Font", sans-serif;
+  font-size: 46px;
+  font-weight: 900;
+  color: @fg;
+  letter-spacing: -2px;
+}
+
+.time-ap {
+  font-size: 14px;
+  color: @purple;
+  margin-left: 6px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.date-text {
+  font-size: 12px;
+  color: @fg_dim;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.uptime-text {
+  font-size: 11px;
+  color: @fg_muted;
+  font-weight: 600;
+}
+
+.music-card {
+  background-color: @surface;
+  background-size: cover;
+  background-position: center;
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px solid @border2;
+}
+
+.song-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: @fg;
+  letter-spacing: 0.3px;
+}
+
+.song-artist {
+  font-size: 11.5px;
+  color: @blue;
+  font-weight: 600;
+}
+
+.ctrl-btn {
+  font-size: 16px;
+  color: @fg_dim;
+  border-radius: 6px;
+  min-width: 26px;
+  min-height: 26px;
+  padding: 0;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.ctrl-btn:hover {
+  color: @purple;
+  background-color: rgba(187, 154, 247, 0.15);
+}
+
+.play-btn {
+  font-size: 20px;
+  color: @purple;
+}
+
+.play-btn:hover {
+  color: @fg;
+  background-color: rgba(187, 154, 247, 0.25);
+}
+
+.repeat-btn {
+  font-size: 13px;
+  color: @fg_muted;
+}
+
+.waveform {
+  min-height: 20px;
+  margin: 4px 0 2px;
+}
+
+.wb {
+  min-width: 3px;
+  border-radius: 3px;
+  background-image: linear-gradient(to bottom, #c0caf5 0%, @purple 100%);
+}
+
+.b1  { min-height: 6px;  }
+.b2  { min-height: 12px; }
+.b3  { min-height: 18px; }
+.b4  { min-height: 8px;  }
+.b5  { min-height: 14px; }
+.b6  { min-height: 6px;  }
+.b7  { min-height: 16px; }
+.b8  { min-height: 10px; }
+.b9  { min-height: 20px; }
+.b10 { min-height: 6px;  }
+.b11 { min-height: 12px; }
+.b12 { min-height: 8px;  }
+
+.music-bar trough {
+  background-color: rgba(15, 15, 24, 0.6);
+  border-radius: 6px;
+  min-height: 4px;
+}
+
+.music-bar highlight {
+  background-color: @purple;
+  border-radius: 6px;
+}
+
+.music-bar slider {
+  background-color: @fg;
+  border-radius: 50%;
+  min-width: 12px;
+  min-height: 12px;
+  margin: -4px 0;
+}
+
+.stats-row { padding: 2px 0; }
+
+.stat-box {
+  background-color: @surface;
+  border-radius: 14px;
+  padding: 12px 8px;
+  border: 1px solid @border2;
+  min-width: 76px;
+}
+
+.ring trough { background-color: rgba(192, 202, 245, 0.12); }
+
+.ring.bat { color: @green; }
+.ring.cpu { color: @blue; }
+.ring.mem { color: @purple; }
+
+.ring-icon { font-size: 22px; }
+.ring-icon.bat { color: @green; }
+.ring-icon.cpu { color: @blue; }
+.ring-icon.mem { color: @purple; }
+
+.ring-label {
+  font-size: 10px;
+  color: @fg_muted;
+  letter-spacing: 2px;
+  font-weight: 800;
+}
+
+.slider-row { padding: 2px 0; }
+
+.vol-icon {
+  font-size: 20px;
+  color: @cyan;
+  min-width: 28px;
+}
+
+.vol-scale trough {
+  background-color: rgba(192, 202, 245, 0.10);
+  border-radius: 4px;
+  min-height: 4px;
+}
+
+.vol-scale highlight {
+  background-color: @cyan;
+  border-radius: 4px;
+}
+
+.vol-scale slider {
+  background-color: @fg;
+  border-radius: 50%;
+  min-width: 12px;
+  min-height: 12px;
+  margin: -4px 0;
+}
+
+.bright-icon {
+  font-size: 20px;
+  color: @yellow;
+  min-width: 28px;
+}
+
+.bright-scale trough {
+  background-color: rgba(192, 202, 245, 0.10);
+  border-radius: 4px;
+  min-height: 4px;
+}
+
+.bright-scale highlight {
+  background-color: @yellow;
+  border-radius: 4px;
+}
+
+.bright-scale slider {
+  background-color: @fg;
+  border-radius: 50%;
+  min-width: 12px;
+  min-height: 12px;
+  margin: -4px 0;
+}
+
+.slider-lbl {
+  font-size: 12px;
+  color: @fg_dim;
+  font-weight: 700;
+  min-width: 36px;
+  margin-left: 4px;
+}
+
+.qbtn-row { padding: 4px 0; }
+
+.qbtn {
+  font-size: 18px;
+  background-color: @surface;
+  border-radius: 12px;
+  border: 1px solid @border2;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0; 
+  transition: all 0.2s ease;
+}
+
+.qbtn label {
+  margin: 0;
+  padding: 0;
+}
+
+.qbtn.wifi   { color: @purple; }
+.qbtn.notif  { color: @blue; }
+.qbtn.mute   { color: @cyan; }
+.qbtn.logout { color: @yellow; }
+.qbtn.power  { color: @red; }
+
+.qbtn.wifi:hover {
+  background-color: rgba(187, 154, 247, 0.15);
+  border-color: @purple;
+}
+
+.qbtn.notif:hover {
+  background-color: rgba(122, 162, 247, 0.15);
+  border-color: @blue;
+}
+
+.qbtn.mute:hover {
+  background-color: rgba(125, 207, 255, 0.15);
+  border-color: @cyan;
+}
+
+.qbtn.logout:hover {
+  background-color: rgba(224, 175, 104, 0.15);
+  border-color: @yellow;
+}
+
+.qbtn.power:hover {
+  background-color: rgba(247, 118, 142, 0.15);
+  border-color: @red;
+}
