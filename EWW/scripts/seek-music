@@ -1,0 +1,13 @@
+#!/bin/bash
+# Receives a 0-100 percentage, returns the position in seconds
+# Used by: playerctl position $(seek-music <pct>)
+pct=${1:-0}
+len=$(playerctl metadata --format '{{mpris:length}}' 2>/dev/null)
+
+if [ -z "$len" ] || [ "$len" = "0" ]; then
+  echo "0"
+  exit 0
+fi
+
+# mpris:length is in microseconds, playerctl position wants seconds
+awk "BEGIN { printf \"%.2f\", ($pct / 100) * ($len / 1000000) }"

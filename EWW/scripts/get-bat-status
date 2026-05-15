@@ -1,0 +1,12 @@
+#!/bin/bash
+# Returns Charging / Discharging / Full / Unknown
+BAT_PATH="/sys/class/power_supply"
+
+for bat in BAT0 BAT1 BAT; do
+  if [ -f "$BAT_PATH/$bat/status" ]; then
+    cat "$BAT_PATH/$bat/status"
+    exit 0
+  fi
+done
+
+echo "Unknown"

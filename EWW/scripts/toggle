@@ -1,0 +1,10 @@
+#!/bin/bash
+# Bind this to SUPER+D in hyprland.conf:
+#   bind = SUPER, D, exec, ~/.config/eww/scripts/toggle
+#
+# Toggle the eww dashboard open/closed
+if eww active-windows | grep -q "dashboard"; then
+  eww close dashboard
+else
+  eww open dashboard
+fi

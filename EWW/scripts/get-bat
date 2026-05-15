@@ -1,0 +1,13 @@
+#!/bin/bash
+# Returns battery percentage 0-100
+# Change BAT0 to BAT1 if your system uses that
+BAT_PATH="/sys/class/power_supply"
+
+for bat in BAT0 BAT1 BAT; do
+  if [ -f "$BAT_PATH/$bat/capacity" ]; then
+    cat "$BAT_PATH/$bat/capacity"
+    exit 0
+  fi
+done
+
+echo "0"
