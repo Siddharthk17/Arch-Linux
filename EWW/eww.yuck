@@ -1,0 +1,139 @@
+(defvar username "Sid")
+
+(defpoll greeting   :interval "1m" `date +%H | awk '{if($1<12) print "Good Morning,"; else if($1<18) print "Good Afternoon,"; else print "Good Evening,"}'`)
+(defpoll clock_h    :interval "1s" :initial "12" `date '+%I'`)
+(defpoll clock_m    :interval "1s" :initial "00" `date '+%M'`)
+(defpoll clock_ap   :interval "1s" :initial "AM" `date '+%p'`)
+(defpoll date_full  :interval "1m" :initial "Friday, May 15, 2026" `date '+%A, %B %d, %Y'`)
+(defpoll uptime_val :interval "1m" :initial "0m" `uptime -p | sed -e 's/up //g' -e 's/ hours,/h/g' -e 's/ minutes/m/g' -e 's/ hours/h/g' -e 's/ minute/m/g' -e 's/ days,/d/g' -e 's/ day,/d/g'`)
+
+(defpoll cpu_val    :interval "3s" :initial "0" `~/.config/eww/scripts/get-cpu`)
+(defpoll mem_val    :interval "5s" :initial "0" `~/.config/eww/scripts/get-mem`)
+(defpoll bat_val    :interval "20s" :initial "0" `~/.config/eww/scripts/get-bat`)
+(defpoll bat_status :interval "20s" :initial "Discharging" `~/.config/eww/scripts/get-bat-status`)
+
+(defpoll music_title  :interval "2s" :initial "" `playerctl metadata title 2>/dev/null | head -c 24`)
+(defpoll music_artist :interval "2s" :initial "" `playerctl metadata artist 2>/dev/null | head -c 20`)
+(defpoll music_state  :interval "2s" :initial "Stopped" `playerctl status 2>/dev/null || echo "Stopped"`)
+(defpoll music_prog   :interval "1s" :initial "0" `~/.config/eww/scripts/get-music-prog`)
+(defpoll music_art    :interval "2s" :initial "" `playerctl metadata mpris:artUrl 2>/dev/null | sed 's/file:\/\///'`)
+
+(defpoll vol_val    :interval "2s" :initial "0" `pamixer --get-volume 2>/dev/null || echo "0"`)
+(defpoll is_muted   :interval "2s" :initial "false" `pamixer --get-mute 2>/dev/null || echo "true"`)
+(defpoll bright_val :interval "2s" :initial "50" `brightnessctl -m 2>/dev/null | awk -F, '{print substr($4, 1, length($4)-1)}' || echo "50"`)
+
+(defwidget w_header []
+  (box :orientation "h" :space-evenly false :spacing 16
+    (box :class "profile-pic" :style "background-image: url('/home/sid/Downloads/profile.png');")
+    
+    (box :class "clock-wrap" :orientation "v" :space-evenly false :spacing 0 :valign "center"
+      (label :class "greeting-text" :halign "start" :text greeting)
+      (label :class "username-text" :halign "start" :text username)
+      
+      (box :class "time-row" :orientation "h" :space-evenly false :valign "end" :halign "start"
+        (label :class "time-text" :text "${clock_h}:${clock_m}")
+        (label :class "time-ap" :text clock_ap :valign "end"))
+      (label :class "date-text" :halign "start" :text date_full)
+      (label :class "uptime-text" :halign "start" :text "󰔚  up ${uptime_val}"))))
+
+(defwidget w_wave []
+  (box :class "waveform" :orientation "h" :space-evenly false :spacing 4 :valign "center" :halign "start"
+    (box :class "wb b1") (box :class "wb b2") (box :class "wb b3") (box :class "wb b4")
+    (box :class "wb b5") (box :class "wb b6") (box :class "wb b7") (box :class "wb b8")
+    (box :class "wb b9") (box :class "wb b10") (box :class "wb b11") (box :class "wb b12")))
+
+(defwidget w_music []
+  (box :class "music-card" 
+       :style {music_art != "" ? "background-image: linear-gradient(rgba(26, 27, 46, 0.85), rgba(26, 27, 46, 0.95)), url('${music_art}');" : ""}
+       :orientation "v" :space-evenly false :spacing 8
+    (box :orientation "h" :space-evenly false
+      (box :orientation "v" :space-evenly false :hexpand true :spacing 2
+        (label :class "song-title"  :halign "start" :limit-width 18 :text {music_title == "" ? "No Media Playing" : music_title})
+        (label :class "song-artist" :halign "start" :limit-width 18 :text {music_artist == "" ? "Offline" : music_artist}))
+      (box :class "ctrl-row" :orientation "h" :space-evenly false :halign "end" :valign "center" :spacing 4
+        (button :class "ctrl-btn" :onclick "playerctl previous" "󰒮")
+        (button :class "ctrl-btn play-btn" :onclick "playerctl play-pause" {music_state == "Playing" ? "󰏤" : "󰐊"})
+        (button :class "ctrl-btn" :onclick "playerctl next" "󰒭")
+        (button :class "ctrl-btn repeat-btn" :onclick "playerctl loop Track" "󰑖")))
+    
+    (revealer :transition "slidedown" :reveal {music_state == "Playing" || music_state == "Paused"} :duration "300ms"
+      (box :orientation "v" :space-evenly false :spacing 6
+        (w_wave)
+        (scale
+          :class "music-bar"
+          :value {music_prog == "" ? 0 : music_prog}
+          :min 0
+          :max 100
+          :onchange "playerctl position $(~/.config/eww/scripts/seek-music {})")))))
+
+(defwidget w_ring [val ring_class icon_text label_text]
+  (box :class "stat-box" :orientation "v" :space-evenly false :spacing 6 :halign "center"
+    (circular-progress
+      :class "ring ${ring_class}"
+      :value {val == "" ? 0 : val}
+      :thickness 8
+      :width 64
+      :height 64
+      (label :class "ring-icon ${ring_class}" :text icon_text))
+    (label :class "ring-label" :text label_text)))
+
+(defwidget w_stats []
+  (box :class "stats-row" :orientation "h" :space-evenly true :spacing 12
+    (w_ring :val {bat_val} :ring_class "bat" :icon_text {bat_status == "Charging" ? "󰂄" : "󰁹"} :label_text "BAT")
+    (w_ring :val {cpu_val} :ring_class "cpu" :icon_text "󰍛" :label_text "CPU")
+    (w_ring :val {mem_val} :ring_class "mem" :icon_text "󰾕" :label_text "MEM")))
+
+(defwidget w_sliders []
+  (box :orientation "v" :space-evenly false :spacing 12
+    (box :class "slider-row" :orientation "h" :space-evenly false :spacing 12 :valign "center"
+      (label :class "vol-icon" :text {is_muted == "true" ? "󰝟" : "󰕾"})
+      (scale
+        :class "vol-scale"
+        :value {vol_val == "" ? 0 : vol_val}
+        :min 0
+        :max 100
+        :hexpand true
+        :onchange "pamixer --set-volume {}")
+      (label :class "slider-lbl" :text "${vol_val}%"))
+    (box :class "slider-row" :orientation "h" :space-evenly false :spacing 12 :valign "center"
+      (label :class "bright-icon" :text "󰃠")
+      (scale
+        :class "bright-scale"
+        :value {bright_val == "" ? 0 : bright_val}
+        :min 0
+        :max 100
+        :hexpand true
+        :onchange "brightnessctl set {}%")
+      (label :class "slider-lbl" :text "${bright_val}%"))))
+
+(defwidget w_buttons []
+  (box :class "qbtn-row" :orientation "h" :space-evenly true :spacing 10
+    (button :class "qbtn wifi"   :onclick "sh -c 'nmcli radio wifi | grep -q \"enabled\" && nmcli radio wifi off || nmcli radio wifi on'" 
+      (box :halign "center" :valign "center" :style "margin-right: 8px;" (label :text "")))
+    (button :class "qbtn notif"  :onclick "swaync-client -t"                     
+      (label :text "󰂚" :halign "center" :valign "center"))
+    (button :class "qbtn mute"   :onclick "pamixer -t"                           
+      (label :text "󰕾" :halign "center" :valign "center"))
+    (button :class "qbtn logout" :onclick "hyprctl dispatch exit"                
+      (label :text "󰍃" :halign "center" :valign "center"))
+    (button :class "qbtn power"  :onclick "systemctl poweroff"                   
+      (label :text "󰐥" :halign "center" :valign "center"))))
+
+(defwidget dashboard []
+  (box :class "dashboard" :orientation "v" :space-evenly false :spacing 18
+    (w_header)
+    (box :class "sep")
+    (w_music)
+    (box :class "sep")
+    (w_stats)
+    (w_sliders)
+    (box :class "sep")
+    (w_buttons)))
+
+(defwindow dashboard
+  :monitor    0
+  :geometry   (geometry :x "25px" :y "20px" :width "300px" :anchor "top right")
+  :stacking   "fg"
+  :exclusive  false
+  :focusable  false
+  (dashboard))
